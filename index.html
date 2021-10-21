@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <title>Build your Mainframe</title>
+	<link rel="stylesheet" href="./style.css"> 
+	<style>
+		[multiSelect] [parent]{
+			display: none;
+		}
+	</style>
+</head>
+<body>
+<h1>Build your Mainframe!</h1> 
+    <p>Follow these steps and build your Mainframe</p>  
+<form multiSelect onsubmit="return false">
+		
+			<div visibleId="myFixedSelect">
+			<label>1. Select a Chassis</label>
+			<select name="serviceChoice">
+				    <option value="empty">Please, select a option</option>
+			
+				  <option makeVisible="fix-selection" value="fix">SY4527</option>
+                <option makeVisible="fix-selection" value="fix">SY4527LC</option>
+                <option makeVisible="fix-selection" value="fix">SY5527</option>
+                <option makeVisible="fix-selection" value="fix">SY5527LC</option> 
+					<option makeVisible="buy-parts" value="buy">Passa allo step 4</option>
+			</select>
+		</div>
+	
+		<div parent="myFixedSelect">
+			<div visibleId="fix-selection"> 
+				<label>2. Select a CPU</label>
+				<select name="fixChoice"> 
+					<option makeVisible="engines-selection" value="fix-engine">A4528</option>
+					<option makeVisible="paint-selection" value="fix-paint">Passa agli accessori</option>
+				</select>
+			</div>
+
+			 
+				<div parent="fix-selection">
+				 
+					<div visibleId="engines-selection">  
+					    <label>3. Add more power</label>
+						<select name="engineChoice"> 
+                        <option value="A4531">A4531</option>
+                        <option value="A4532">A4532</option>
+                        <option value="A4533">A4533</option>
+						</select>
+					</div>
+					<!-- Passa agli accessori -->
+					<div visibleId="paint-selection">  
+						 <label>4. Add the accessories</label>
+						<select name="paintChoice"> 
+                        <option value="A5251">A5251</option>
+                        <option value="A5253">A5253</option>
+                        <option value="A992">A992</option>
+                        <option value="N1568ADAT">N1568ADAT</option>
+                        <option value="A953">A953</option>
+                        <option value="A952">A952</option>
+                        <option value="A966">A966</option>
+                        <option value="A319A">A319A</option>
+                        <option value="A319B">A319B</option>
+                        <option value="A372F">A372F</option>
+                        <option value="A372M">A372M</option>
+						</select>
+					</div>
+				</div>
+
+			 <div visibleId="buy-parts"> 
+				 <label>4. Add the accessories</label>
+				<select name="partsChoice">
+				 <option value="A5251">A5251</option>
+                        <option value="A5253">A5253</option>
+                        <option value="A992">A992</option>
+				</select>
+			</div>
+		</div>
+
+			<label>Optional</label>
+        <textarea name="question" cols="30" rows="5" placeholder="This is a simple tool for CAEN SPA"></textarea>
+    <button onclick="sendData()">Find your crate!</button>
+
+    </form> 
+ <p>Test by <a href="mailto:f.capochiani@caen.itack&body=Message">f.capochiani@caen.it</a></p>  
+       	<p><img src="https://www.caen.it/wp-content/themes/zaki-theme/resources/images/logo-1.png"/></p> 
+	 
+	<script src="function.js"></script>
+ 
+	 <script>
+        const multi = new MultiSelect({ // instance
+              pleaseSelectOptionValue: 'empty'
+        });
+ 
+        async function sendData() {
+            const myDataJson = multi.getJson(true); //getJson() method
+            const selectsAreValid = multi.simpleValidate();
+            console.log(myDataJson, selectsAreValid)
+            if (selectsAreValid) {
+                let call = await fetch('/myapi/send', {
+                    'method': 'POST',
+                    'body': JSON.stringify(myDataJson),
+                    'headers': {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                let responseJson = await call.json();
+                console.log(responseJson);
+            }
+        }
+    </script>
+</body>
+</html>
